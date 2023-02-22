@@ -1,3 +1,3 @@
 export { useIssues } from './useIssues';
-export { useIssue } from './useIssue';
+export * from './useIssue';
 export { useLabel } from './useLabel';
