@@ -4,7 +4,7 @@ import { Labels } from "../issues/interfaces/label";
 
 
 const getLabels =async(): Promise<Labels[]> =>{
-  const { data }= await githubApi.get<Labels[]>('/labels');  
+  const { data }= await githubApi.get<Labels[]>('/labels?per_page=100');  
   return data;
 }
 

@@ -1,16 +1,16 @@
 import { useState }from 'react'
 import { LoadingIcon } from '../../shared/components/LoadingIcon';
-import { useIssues } from '../../hooks';
+import { useIssueInfinite } from '../../hooks';
 import { IssueList } from '../components/IssueList';
 import { LabelPicker } from '../components/LabelPicker';
 import { State } from '../interfaces/issue';
 
-export const ListView = () => {
+export const ListViewInfinite = () => {
 
   const [seletedLabels, setSeletedLabels] = useState<string[]>([])
   const [state, setState] = useState<State>()
   
-  const { issueQuery, page, nextPage, prevPage } = useIssues({state, labels: seletedLabels });
+  const { issueQuery } = useIssueInfinite({state, labels: seletedLabels });
 
   const onLabelChange = (labelName: string ) => {
     (seletedLabels.includes(labelName))
@@ -24,32 +24,22 @@ export const ListView = () => {
       
       <div className="col-8">
         { 
-          issueQuery.isLoading 
+           issueQuery.isLoading 
             ? (<LoadingIcon/>)
             : (<IssueList 
-                issues={ issueQuery.data || [] } 
+                issues={ issueQuery.data?.pages.flat() || [] } 
                 state={state}
                 onStateChanged={ (newState)=> setState(newState) }
-              />)
+              />) 
         }
-
-        <div className='d-flex mt-2 justify-content-between align-items-center'>
-          
-          <button 
-            className='btn btn-outline-primary'
-            disabled ={ page === 1 }
-            onClick={prevPage}    
-          >Prev</button>
         
-          <span>{ issueQuery.isFetching? 'Cargando...': page }</span>
-          
-          <button 
-            className='btn btn-outline-primary'
-            onClick={ nextPage }
-            disabled={ issueQuery.isFetching }
-          >Next</button>
-
-        </div>
+        <button 
+          className='btn btn-outline-primary mt-2 '
+          disabled={ !issueQuery.hasNextPage }
+          onClick={ ()=> issueQuery.fetchNextPage() }
+          >
+          Load More...
+        </button>
 
       </div>
       

@@ -1,2 +1,2 @@
-export type { Issue } from './issue';
-export type { Labels } from './label';
+export * from './issue';
+export * from './label';
